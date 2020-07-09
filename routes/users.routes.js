@@ -2,6 +2,8 @@ const express = require('express');
 const connection = require('../conf');
 const router = express.Router();
 
+// correction du super bonus ici
+
 router.get('/', (req, res) => {
   res.send('user')
 });

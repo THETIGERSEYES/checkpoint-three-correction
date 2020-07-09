@@ -2,6 +2,7 @@ const express = require('express');
 const connection = require('../conf');
 const router = express.Router();
 
+// correction du bonus ici 
 router.get('/', (req, res) => {
   let { search } = req.query
   search ? (

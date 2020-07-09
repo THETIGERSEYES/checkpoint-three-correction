@@ -2,6 +2,8 @@ const express = require('express');
 const connection = require('../conf');
 const router = express.Router();
 
+// Correction de toute la partie 1 ici
+
 router.get('/', (req, res) => {
   connection.query('SELECT * FROM playlist', (err, result) => {
     if (err) throw err;
@@ -14,14 +16,13 @@ router.get('/', (req, res) => {
 // En tant qu'utilisateur, je veux pouvoir créer une nouvelle playlist.
 router.post('/', (req, res) => {
   const { title, genre } = req.body
-  const formData = req.body
 
   if(!title){
     res.status(422).json({errorMessage: 'title is missing'})
   } else if(!genre){
     res.status(422).json({errorMessage: 'genre is missing'})
   } else {
-    connection.query('INSERT INTO playlist SET ?', formData, (err, results) => {
+    connection.query('INSERT INTO playlist SET ?', req.body, (err, results) => {
       if(err) {
         res.status(500).json({errorMessage: err})
       } else {
@@ -78,6 +79,12 @@ router.post('/:id/tracks', (req, res) => {
 });
 
 // en tant qu'utilisateur, je veux lister tous les morceaux d'une playlist.
+
+// 2 possibilités :
+// 1/ SELECT * FROM track WHERE playlist_id = ?
+// 2/ SELECT p.title, p.genre, t.title FROM playlist p JOIN track t ON t.playlist_id = p.id WHERE p.id = ?
+// la 2e possibilité permet d'afficher des champs spécifiques issus des 2 tables
+
 router.get('/:id/tracks', (req, res) => {
   const idPlaylist = req.params.id
   connection.query('SELECT * FROM playlist p JOIN track t ON t.playlist_id = p.id WHERE p.id = ?', idPlaylist, (err, results) => {
